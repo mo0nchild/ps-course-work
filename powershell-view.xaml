@@ -2,6 +2,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Service Controll" MinHeight="450" MinWidth="600" MaxHeight="540" MaxWidth="720" WindowStyle="ToolWindow">
     <Window.Resources>
+
+        <Color x:Key="MainStyleColor">Gold</Color>
+        <SolidColorBrush x:Key="MainStyleBrush" Color="{StaticResource MainStyleColor}" />
+        
         <Style TargetType="Button">
             <!--<Button x:Name="ServiceRefresh" Content="Refresh" Grid.Column="1" Margin="10 0 0 0" BorderBrush="#FFF" BorderThickness="2"
                     Background="Gold" FontSize="12" FontWeight = "DemiBold" Foreground="#303030" />-->
@@ -9,7 +13,7 @@
             <Setter Property="Button.Foreground" Value="#303030"/>
             <Setter Property="Button.FontWeight" Value="DemiBold"/>
             <Setter Property="Button.FontSize" Value="12"/>
-            <Setter Property="Button.Background" Value="Gold"/>
+            <Setter Property="Button.Background" Value="{StaticResource MainStyleBrush}"/>
             <Setter Property="Button.BorderThickness" Value="2"/>
         </Style>
         <Style TargetType="TextBox">
@@ -55,7 +59,7 @@
                     <Setter Property="BorderBrush" Value="#202020" />
                 </Trigger>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="Gold" />
+                    <Setter Property="Background" Value="{StaticResource MainStyleBrush}" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -72,7 +76,7 @@
             </Border>
             <MenuItem x:Name="MenuItemInfoButton" Header="Info" HorizontalAlignment="Left"/>
         </Menu>
-        <Border Grid.Row="1" Margin="20 0 20 0" BorderBrush="Gold" BorderThickness="2" Background="#303030">
+        <Border Grid.Row="1" Margin="20 0 20 0" BorderBrush="{StaticResource MainStyleBrush}" BorderThickness="2" Background="#303030">
             <Grid x:Name="ServiceStackList">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -100,7 +104,7 @@
                 </GroupBox>
             </Grid>
         </Border>
-        <Border Grid.Row="2" Margin="20" BorderBrush="Gold" BorderThickness="2">
+        <Border Grid.Row="2" Margin="20" BorderBrush="{StaticResource MainStyleBrush}" BorderThickness="2">
             <TabControl Background="#303030">
                 <TabItem Header="Selected Service Properies" Foreground="#FFF">
                     <ScrollViewer>
@@ -160,7 +164,7 @@
                                     <ColumnDefinition Width="0.85*"/>
                                     <ColumnDefinition Width="0.15*"/>
                                 </Grid.ColumnDefinitions>
-                                
+
                                 <TextBox x:Name="FilePathTextBox" Grid.Column="0" Margin="0 0 5 0"/>
                                 <Button x:Name="OpenFileButton" Grid.Column="1" Margin="5 0 0 0" Content="Open File"/>
                             </Grid>

@@ -12,10 +12,10 @@ class ServiceModelData : System.Object
     [ValidateNotNullOrEmpty()] [System.String] $script:ServiceName;
     [ValidateNotNullOrEmpty()] [System.String] $script:ServiceDisplayName;
 
-    static [ServiceModelData] CreateFromService([System.String] $local:service_name)
+    static [ServiceModelData] CreateFromService([System.String]$local:service_name)
     {
         [ComponentModel.Component] $local:service_item = (Get-Service -Name $local:service_name);
-        return ([ServiceModelData]@{ ServiceDisplayName = ($service_item).DisplayName;
+        return ([ServiceModelData] @{ ServiceDisplayName = ($service_item).DisplayName;
             ServiceStatus = ($service_item).Status; ServiceName = ($service_item).ServiceName; 
         });
     }
@@ -28,25 +28,13 @@ function local:LoadXamlFormFile([string] ${local:File-Path})
     return ([Windows.Markup.XamlReader]::Load(${Xaml-Reader}));
 }
 
-try { ${script:Main-Window} = LoadXamlFormFile("$PSScriptRoot\powershell-view.xaml"); }
-catch { Write-Host "Can't load Windows.Markup.XamlReader"; Exit; }
+Write-Host("$PSScriptRoot\powershell-view.xaml");
 
-[void](New-Variable -Name "menuitem_info_button" -Value ${script:Main-Window}.FindName("MenuItemInfoButton") `
-    -Scope "Script" -Option "Constant");
+try { ${script:Main-Window} = local:LoadXamlFormFile("$PSScriptRoot\powershell-view.xaml"); }
+catch { Write-Host("Can't load Windows.Markup.XamlReader; ($PSItem.Exteption.Message)"); Exit; }
 
-[void](New-Variable -Name "service_refresh_button" -Value ${script:Main-Window}.FindName("ServiceRefreshButton") `
-    -Scope "Script" -Option "Constant");
-[void](New-Variable -Name "service_update_button" -Value ${script:Main-Window}.FindName("UpdateServiceButton") `
-    -Scope "Script" -Option "Constant");
 [void](New-Variable -Name "service_status_button" -Value ${script:Main-Window}.FindName("ChangeStatusButton") `
     -Scope "Script" -Option "Constant");
-[void](New-Variable -Name "new_service_button" -Value ${script:Main-Window}.FindName("NewServiceButton") `
-    -Scope "Script" -Option "Constant");
-[void](New-Variable -Name "delete_service_button" -Value ${script:Main-Window}.FindName("DeleteServiceButton") `
-    -Scope "Script" -Option "Constant");
-[void](New-Variable -Name "file_dialog_button" -Value ${script:Main-Window}.FindName("OpenFileButton") `
-    -Scope "Script" -Option "Constant");
-    
 [void](New-Variable -Name "service_listview" -Value ${script:Main-Window}.FindName("ServiceList") `
     -Scope "Script" -Option "Constant");
 [void](New-Variable -Name "service_requirement" -Value ${script:Main-Window}.FindName("ServiceRequires") `
@@ -54,13 +42,8 @@ catch { Write-Host "Can't load Windows.Markup.XamlReader"; Exit; }
 [void](New-Variable -Name "service_searching" -Value ${script:Main-Window}.FindName("ServiceSearching") `
     -Scope "Script" -Option "Constant");
 
-[void](New-Variable -Name "service_displayname_textbox" -Value ${script:Main-Window}.FindName("NewServiceDisplayName") `
-    -Scope "Script" -Option "Constant");
-[void](New-Variable -Name "service_name_textbox" -Value ${script:Main-Window}.FindName("NewServiceName") `
-    -Scope "Script" -Option "Constant");
 [void](New-Variable -Name "service_filepath_textbox" -Value ${script:Main-Window}.FindName("FilePathTextBox") `
     -Scope "Script" -Option "Constant");
-    
 [void](New-Variable -Name "service_name_property" -Value ${script:Main-Window}.FindName("NameTextBlock") `
     -Scope "Script" -Option "Constant");
 [void](New-Variable -Name "service_status_property" -Value ${script:Main-Window}.FindName("StatusTextBlock") `
@@ -186,8 +169,8 @@ function script:FilePathServiceCallback()
 
 function script:NewServiceCallback()
 {
-    [System.String] $local:new_service_name = ($script:service_name_textbox).Text;
-    [System.String] $local:new_service_diplayname = ($script:service_displayname_textbox).Text;
+    [System.String] $local:new_service_name = (${script:Main-Window}.FindName("NewServiceName")).Text;
+    [System.String] $local:new_service_diplayname = (${script:Main-Window}.FindName("NewServiceDisplayName")).Text;
     
     try {
         [Collections.ArrayList] $local:cmdler_error = $global:null; 
@@ -209,17 +192,17 @@ function script:DeleteServiceCallback()
     } catch { [MessageBox]::Show("Cannot delete service; ($PSItem.Exception.Message)","Error"); }
 }
 
-$script:service_refresh_button.Add_Click($function:ButtonRefreshCallback)
-$script:service_update_button.Add_Click($function:ButtonUpdateCallback);
+${script:Main-Window}.FindName("ServiceRefreshButton").Add_Click($function:ButtonRefreshCallback)
+${script:Main-Window}.FindName("UpdateServiceButton").Add_Click($function:ButtonUpdateCallback);
 $script:service_status_button.Add_Click($function:ButtonStatusCallback);
 
 $script:service_listview.Add_MouseUp($function:ServicePropertyCallBack);
 $script:service_searching.Add_TextChanged($function:ServiceSearchingCallback);
 
-$script:new_service_button.Add_Click($function:NewServiceCallback);
-$script:delete_service_button.Add_Click($function:DeleteServiceCallback);
-$script:file_dialog_button.Add_Click($function:FilePathServiceCallback);
+${script:Main-Window}.FindName("NewServiceButton").Add_Click($function:NewServiceCallback);
+${script:Main-Window}.FindName("DeleteServiceButton").Add_Click($function:DeleteServiceCallback);
+${script:Main-Window}.FindName("OpenFileButton").Add_Click($function:FilePathServiceCallback);
 
-$script:menuitem_info_button.Add_Click({
+${script:Main-Window}.FindName("MenuItemInfoButton").Add_Click({
     [MessageBox]::Show("Service Control Course-Work [BIST-214]","Info");});
 [void](${script:Main-Window}.ShowDialog() | Out-Null);
