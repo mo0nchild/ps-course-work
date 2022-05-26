@@ -181,7 +181,7 @@ function script:NewServiceCallback()
 
         if($local:cmdler_error -ne $global:null) { throw [System.Exception]::new("Cmdlet Error"); }
         [MessageBox]::Show("New Service was Created","Success");
-    } catch { [MessageBox]::Show("Cannot create new service; ($PSItem.Exception.Message)","Error"); }
+    } catch { [MessageBox]::Show("Cannot create new service; $($PSItem.Exception.Message)","Error"); }
 }
 
 function script:DeleteServiceCallback()
@@ -189,7 +189,7 @@ function script:DeleteServiceCallback()
     try { [System.String] $local:selected_service = ($service_listview.SelectedValue).ServiceName;
         (Get-WmiObject Win32_Service -Filter ("name='$local:selected_service'")).Delete();
         [MessageBox]::Show("Selected Service was Deleted","Success"); 
-    } catch { [MessageBox]::Show("Cannot delete service; ($PSItem.Exception.Message)","Error"); }
+    } catch { [MessageBox]::Show("Cannot delete service; $($PSItem.Exception.Message)","Error"); }
 }
 
 ${script:Main-Window}.FindName("ServiceRefreshButton").Add_Click($function:ButtonRefreshCallback)
