@@ -23,8 +23,8 @@ class ServiceModelData : System.Object
 
 function local:LoadXamlFormFile([string] ${local:File-Path})
 {
-    [xml] ${local:Xaml-File} = (Get-Content -Path ${local:File-Path});
-    ${local:Xaml-Reader} = (New-Object System.Xml.XmlNodeReader ${Xaml-File});
+    [Xml.XmlDocument] ${local:Xaml-File} = (Get-Content -Path ${local:File-Path});
+    [Xml.XmlNodeReader] ${local:Xaml-Reader} = (New-Object System.Xml.XmlNodeReader ${Xaml-File});
     return ([Windows.Markup.XamlReader]::Load(${Xaml-Reader}));
 }
 
