@@ -12,9 +12,9 @@ class ServiceModelData : System.Object
     [ValidateNotNullOrEmpty()] [System.String] $script:ServiceName;
     [ValidateNotNullOrEmpty()] [System.String] $script:ServiceDisplayName;
 
-    static [ServiceModelData] CreateFromService([System.String]$local:service_name)
+    static [ServiceModelData] CreateFromService([System.String] $service_name)
     {
-        [ComponentModel.Component] $local:service_item = (Get-Service -Name $local:service_name);
+        [ComponentModel.Component] $local:service_item = (Get-Service -Name $service_name);
         return ([ServiceModelData] @{ ServiceDisplayName = ($service_item).DisplayName;
             ServiceStatus = ($service_item).Status; ServiceName = ($service_item).ServiceName; 
         });
