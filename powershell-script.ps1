@@ -33,6 +33,8 @@ Write-Host("$PSScriptRoot\powershell-view.xaml");
 try { ${script:Main-Window} = local:LoadXamlFormFile("$PSScriptRoot\powershell-view.xaml"); }
 catch { Write-Host("Can't load Windows.Markup.XamlReader; ($PSItem.Exteption.Message)"); Exit; }
 
+Write-Host( ${script:Main-Window}.GetType());
+
 [void](New-Variable -Name "service_status_button" -Value ${script:Main-Window}.FindName("ChangeStatusButton") `
     -Scope "Script" -Option "Constant");
 [void](New-Variable -Name "service_listview" -Value ${script:Main-Window}.FindName("ServiceList") `
@@ -134,8 +136,8 @@ function script:ButtonStatusCallback()
     try {
         switch((Get-Service -Name $local:selected_service.ServiceName).Status)
         {
-            "Running" { [void] (Get-Service -Name $local:selected_service.ServiceName | Stop-Service -Force -PassThru); }
-            "Stopped" { [void] (Get-Service -Name $local:selected_service.ServiceName | Start-Service -PassThru); } 
+            "Running" { [void] (Get-Service -Name $local:selected_service.ServiceName | Stop-Service -Force); }
+            "Stopped" { [void] (Get-Service -Name $local:selected_service.ServiceName | Start-Service); } 
         }
         [void] ($local:selected_service.ServiceStatus = (Get-Service -Name $local:selected_service.ServiceName).Status);
     } catch { [MessageBox]::Show("Cannot change service status","Error"); }
@@ -182,14 +184,23 @@ function script:NewServiceCallback()
         if($local:cmdler_error -ne $global:null) { throw [System.Exception]::new("Cmdlet Error"); }
         [MessageBox]::Show("New Service was Created","Success");
     } catch { [MessageBox]::Show("Cannot create new service; $($PSItem.Exception.Message)","Error"); }
+    
+    [void] (script:WindowsItemsClear);
 }
 
 function script:DeleteServiceCallback()
 {
-    try { [System.String] $local:selected_service = ($service_listview.SelectedValue).ServiceName;
-        (Get-WmiObject Win32_Service -Filter ("name='$local:selected_service'")).Delete();
+    [System.String] $local:selected_service = ($service_listview.SelectedValue).ServiceName;
+    if($local:selected_service -eq [System.String]::Empty) { return [void]; }
+
+    try { 
+        [void] (Get-Service -Name $local:selected_service | Stop-Service -Force);
+        [void] ((Get-WmiObject Win32_Service -Filter ("name='$local:selected_service'")).Delete());
+        
         [MessageBox]::Show("Selected Service was Deleted","Success"); 
     } catch { [MessageBox]::Show("Cannot delete service; $($PSItem.Exception.Message)","Error"); }
+
+    [void] (script:WindowsItemsClear);
 }
 
 ${script:Main-Window}.FindName("ServiceRefreshButton").Add_Click($function:ButtonRefreshCallback)
