@@ -2,6 +2,8 @@ using namespace System;
 using namespace System.ComponentModel;
 using namespace System.Windows.Controls;
 using namespace System.Windows;
+
+using namespace System.Threading;
 using namespace Microsoft;
 
 [void] (Add-Type -AssemblyName PresentationFramework);
@@ -28,12 +30,12 @@ function local:LoadXamlFormFile([string] ${local:File-Path})
     return ([Windows.Markup.XamlReader]::Load(${Xaml-Reader}));
 }
 
-Write-Host("$PSScriptRoot\powershell-view.xaml");
+#Write-Host("$PSScriptRoot\powershell-view.xaml");
 
 try { ${script:Main-Window} = local:LoadXamlFormFile("$PSScriptRoot\powershell-view.xaml"); }
 catch { Write-Host("Can't load Windows.Markup.XamlReader; ($PSItem.Exteption.Message)"); Exit; }
 
-Write-Host( ${script:Main-Window}.GetType());
+#Write-Host( ${script:Main-Window}.GetType());
 
 [void](New-Variable -Name "service_status_button" -Value ${script:Main-Window}.FindName("ChangeStatusButton") `
     -Scope "Script" -Option "Constant");
@@ -64,8 +66,9 @@ function script:Set-ListViewItems
     begin { $ListBoxItem.Items.Clear(); }
     process { 
         [ServiceModelData] ${local:Service-Model} = (New-Object -TypeName "ServiceModelData" -Property @{
-            ServiceName = ($ServiceList).ServiceName; ServiceStatus = ($ServiceList).Status; 
-            ServiceDisplayName = ($ServiceList).DisplayName; });
+            ServiceName = ($ServiceList).ServiceName;  ServiceDisplayName = ($ServiceList).DisplayName;
+            ServiceStatus = "[ $(if(($ServiceList).Status -eq "Running") {"Работает"} else {"Остановлена"}) ]";
+        });
         $ListBoxItem.Items.Add(${local:Service-Model})  
     }
 }
@@ -77,11 +80,12 @@ function script:ServicePropertyCallBack
 
     switch($local:selected_service.Status)
     {
-        "Running" { $script:service_status_button.Content = "Stop Service"; }
-        "Stopped" { $script:service_status_button.Content = "Start Service"; }
+        "Running" { $script:service_status_button.Content = [System.String]::new("Остановка службы"); }
+        "Stopped" { $script:service_status_button.Content = [System.String]::new("Запуск службы"); }
     }   
     [void] ($script:service_name_property.Text =  ($local:selected_service).ServiceName);
-    [void] ($script:service_status_property.Text =  ($local:selected_service).Status);
+    [void] ($script:service_status_property.Text = 
+        if(($local:selected_service).Status -eq "Running" ) {"Работает"} else { "Остановлена" });
     
     [void] ($script:service_displayname_property.Text =  ($local:selected_service).DisplayName);
     [void] ($script:service_starttype_property.Text =  ($local:selected_service).StartType);
@@ -94,7 +98,7 @@ function script:ServicePropertyCallBack
 function script:WindowsItemsClear
 {
     [void] ($script:service_status_button.IsEnabled = $global:false);
-    [void] ($script:service_status_button.Content = "Start Service");
+    [void] ($script:service_status_button.Content = "Запуск службы");
 
     [void] ($script:service_name_property.Text = $global:null);
     [void] ($script:service_status_property.Text =  $global:null);
@@ -117,14 +121,15 @@ function script:ButtonUpdateCallback()
 {
     [System.String] $local:service_display_name = $script:service_displayname_property.Text;
     [System.String] $local:service_start_type = $script:service_starttype_property.Text;
-    if(($local:service_display_name).Length -lt 5) { [MessageBox]::Show("Short Name","Error"); return [void]; }
-
     try {
+        if(($service_listview.SelectedIndex) -eq -1) { throw ("Служба для редактирования не выбранна"); }
+        if(($local:service_display_name).Length -lt 5) { throw ("Неверно заполнены поля"); }
+
         [void] (Set-Service -Name ([ServiceModelData]$service_listview.SelectedItems[0]).ServiceName `
             -DisplayName $local:service_display_name -StartupType $local:service_start_type);
         [void] (($script:service_listview.SelectedItems[0]).ServiceDisplayName = $local:service_display_name);
     } 
-    catch{ [MessageBox]::Show("Cannot set service properties","Error"); }
+    catch{ [MessageBox]::Show("Невозможно изменить свойства: $($PSItem.Exception.Message)","Ошибка"); }
     
     [void] ($script:service_listview.Items.Refresh());
     [void] (script:ServicePropertyCallBack);
@@ -139,8 +144,11 @@ function script:ButtonStatusCallback()
             "Running" { [void] (Get-Service -Name $local:selected_service.ServiceName | Stop-Service -Force); }
             "Stopped" { [void] (Get-Service -Name $local:selected_service.ServiceName | Start-Service); } 
         }
-        [void] ($local:selected_service.ServiceStatus = (Get-Service -Name $local:selected_service.ServiceName).Status);
-    } catch { [MessageBox]::Show("Cannot change service status","Error"); }
+        [void] ($local:selected_service.ServiceStatus = "[ $(
+            if((Get-Service -Name $local:selected_service.ServiceName).Status -eq "Running") 
+            {"Работает"} else {"Остановлена"}) ]");
+
+    } catch { [MessageBox]::Show("Невозможно изменить состояние","Ошибка"); }
     
     [void] ($script:service_listview.Items.Refresh());
     [void] (script:ServicePropertyCallBack);
@@ -152,7 +160,7 @@ function script:ServiceSearchingCallback()
     { 
         if(($script:service_searching.Text)[$i] -notlike "[A-Za-z0-1 ]") { return [void]; } 
     }
-    [System.ComponentModel.Component[]]${local:Service-List} = (Get-Service -Name ($script:service_searching.Text + "*"));
+    [System.ComponentModel.Component[]]${local:Service-List} = (Get-Service -Name ("*$($script:service_searching.Text)*"));
 
     if(${local:Service-List} -eq $global:null) { return [void]; }
     [void](${local:Service-List} | Set-ListViewItems -ListBoxItem $script:service_listview); 
@@ -173,17 +181,18 @@ function script:NewServiceCallback()
 {
     [System.String] $local:new_service_name = (${script:Main-Window}.FindName("NewServiceName")).Text;
     [System.String] $local:new_service_diplayname = (${script:Main-Window}.FindName("NewServiceDisplayName")).Text;
-    
+
+    if(($local:new_service_name.Length -le 5) -or ($local:new_service_diplayname.Length -le 5)) { return [void]; }
     try {
         [Collections.ArrayList] $local:cmdler_error = $global:null; 
 
         [void] (New-Service -Name $local:new_service_name -DisplayName $local:new_service_diplayname `
-        -BinaryPathName ($script:service_filepath_textbox).Text -ErrorVariable cmdler_error `
-        -ErrorAction SilentlyContinue);
+            -BinaryPathName ($script:service_filepath_textbox).Text -ErrorVariable cmdler_error `
+            -ErrorAction SilentlyContinue);
 
         if($local:cmdler_error -ne $global:null) { throw [System.Exception]::new("Cmdlet Error"); }
-        [MessageBox]::Show("New Service was Created","Success");
-    } catch { [MessageBox]::Show("Cannot create new service; $($PSItem.Exception.Message)","Error"); }
+        [MessageBox]::Show("Служба была создана","Успешно");
+    } catch { [MessageBox]::Show("Невозможно создать службу; $($PSItem.Exception.Message)","Ошибка"); }
     
     [void] (script:WindowsItemsClear);
 }
@@ -197,9 +206,8 @@ function script:DeleteServiceCallback()
         [void] (Get-Service -Name $local:selected_service | Stop-Service -Force);
         [void] ((Get-WmiObject Win32_Service -Filter ("name='$local:selected_service'")).Delete());
         
-        [MessageBox]::Show("Selected Service was Deleted","Success"); 
-    } catch { [MessageBox]::Show("Cannot delete service; $($PSItem.Exception.Message)","Error"); }
-
+        [MessageBox]::Show("Выбранная служба была удалена","Успешно"); 
+    } catch { [MessageBox]::Show(" Невозможно удалить службу; $($PSItem.Exception.Message)","Ошибка"); }
     [void] (script:WindowsItemsClear);
 }
 
@@ -215,5 +223,7 @@ ${script:Main-Window}.FindName("DeleteServiceButton").Add_Click($function:Delete
 ${script:Main-Window}.FindName("OpenFileButton").Add_Click($function:FilePathServiceCallback);
 
 ${script:Main-Window}.FindName("MenuItemInfoButton").Add_Click({
-    [MessageBox]::Show("Service Control Course-Work [BIST-214]","Info");});
+    [MessageBox]::Show("Курсовая работа на тему 'Управление службами Windows' [бИСТ-214]","Информация");});
+
+[void](Invoke-Command -ScriptBlock {script:ButtonRefreshCallback});
 [void](${script:Main-Window}.ShowDialog() | Out-Null);

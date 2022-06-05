@@ -1,6 +1,6 @@
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" WindowStartupLocation="CenterScreen"
-        Title="Service Controll" MinHeight="450" MinWidth="600" MaxHeight="540" MaxWidth="720" WindowStyle="ToolWindow">
+        Title="Управление службами" MinHeight="450" MinWidth="600" MaxHeight="540" MaxWidth="720" WindowStyle="ToolWindow">
     <Window.Resources>
         <Color x:Key="MainStyleColor">Gold</Color>
         <SolidColorBrush x:Key="MainStyleBrush" Color="{StaticResource MainStyleColor}" />
@@ -73,7 +73,7 @@
             <Border BorderThickness="2" BorderBrush="#FFF">
                 <Separator Width="5" Height="5"/>
             </Border>
-            <MenuItem x:Name="MenuItemInfoButton" Header="Info" HorizontalAlignment="Left"/>
+            <MenuItem x:Name="MenuItemInfoButton" Header="Информация" HorizontalAlignment="Left"/>
         </Menu>
         <Border Grid.Row="1" Margin="20 0 20 0" BorderBrush="{StaticResource MainStyleBrush}" BorderThickness="2" Background="#303030">
             <Grid x:Name="ServiceStackList">
@@ -87,15 +87,15 @@
                         <ColumnDefinition Width="0.2*"/>
                     </Grid.ColumnDefinitions>
                     <TextBox x:Name="ServiceSearching" MaxLength="40" Grid.Column="0"/>
-                    <Button x:Name="ServiceRefreshButton" Content="Refresh" Grid.Column="1" Margin="10 0 0 0"/>
+                    <Button x:Name="ServiceRefreshButton" Content="Очистить" Grid.Column="1" Margin="10 0 0 0"/>
                 </Grid>
-                <GroupBox Grid.Row="2" Header="Services List" Foreground="#FFF" Padding="0 5 0 0" BorderThickness="0 0.5 0 0" Margin="15 0 15 5">
+                <GroupBox Grid.Row="2" Header="Список служб" Foreground="#FFF" Padding="0 5 0 0" BorderThickness="0 0.5 0 0" Margin="15 0 15 5">
                     <ListView x:Name="ServiceList" HorizontalAlignment="Stretch" SelectionMode="Single">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Width="100" DisplayMemberBinding="{Binding Path=ServiceStatus}">Status</GridViewColumn>
-                                <GridViewColumn Width="200" DisplayMemberBinding="{Binding Path=ServiceName}">Name</GridViewColumn>
-                                <GridViewColumn Width="200" DisplayMemberBinding="{Binding Path=ServiceDisplayName}">DisplayName</GridViewColumn>
+                                <GridViewColumn Width="100" DisplayMemberBinding="{Binding Path=ServiceStatus}">Состояние</GridViewColumn>
+                                <GridViewColumn Width="200" DisplayMemberBinding="{Binding Path=ServiceName}">Название</GridViewColumn>
+                                <GridViewColumn Width="200" DisplayMemberBinding="{Binding Path=ServiceDisplayName}">Отображаемое имя</GridViewColumn>
                             </GridView>
                         </ListView.View>
                         <ListView.Resources></ListView.Resources>
@@ -105,7 +105,7 @@
         </Border>
         <Border Grid.Row="2" Margin="20" BorderBrush="{StaticResource MainStyleBrush}" BorderThickness="2">
             <TabControl Background="#303030">
-                <TabItem Header="Selected Service Properies" Foreground="#FFF">
+                <TabItem Header="Свойства выбранной службы" Foreground="#FFF">
                     <ScrollViewer>
                         <Grid x:Name="ServiceProperies">
                             <Grid.ColumnDefinitions>
@@ -117,20 +117,20 @@
                                 <RowDefinition Height="0.5*"/>
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Row="0" Grid.Column="0" Margin="5 0">
-                                <Button x:Name="ChangeStatusButton" Content="Start Service" IsEnabled="False" Margin="5 5 5 0"/>
-                                <GroupBox Header="Service Name" BorderThickness="0 0.5 0 0">
+                                <Button x:Name="ChangeStatusButton" Content="Запуск службы" IsEnabled="False" Margin="5 5 5 0"/>
+                                <GroupBox Header="Название службы" BorderThickness="0 0.5 0 0">
                                     <TextBox x:Name="NameTextBlock" IsReadOnly="True"/>
                                 </GroupBox>
-                                <GroupBox Header="Service Status" BorderThickness="0 0.5 0 0">
+                                <GroupBox Header="Состояние службы" BorderThickness="0 0.5 0 0">
                                     <TextBox x:Name="StatusTextBlock" IsReadOnly="True"/>
                                 </GroupBox>
                             </StackPanel>
                             <StackPanel Grid.Row="0" Grid.Column="1" Margin="5 0">
-                                <Button x:Name="UpdateServiceButton" Content="Update Service" Margin="5 5 5 0"/>
-                                <GroupBox Header="Service Display Name" BorderThickness="0 0.5 0 0">
+                                <Button x:Name="UpdateServiceButton" Content="Обновить службу" Margin="5 5 5 0"/>
+                                <GroupBox Header="Отображаемое имя" BorderThickness="0 0.5 0 0">
                                     <TextBox x:Name="DisplayNameTextBlock"/>
                                 </GroupBox>
-                                <GroupBox Header="Service Start Type" BorderThickness="0 0.5 0 0">
+                                <GroupBox Header="Тип запуска" BorderThickness="0 0.5 0 0">
                                     <ComboBox x:Name="StartTypeComboBox" FontSize="14" VerticalAlignment="Top" IsReadOnly="True"
                                               Height="21" Background="#FFF">
                                         <TextBlock Text="Automatic"/>
@@ -139,14 +139,14 @@
                                     </ComboBox>
                                 </GroupBox>
                             </StackPanel>
-                            <GroupBox Grid.Row="1" Grid.ColumnSpan="2" Header="Service Requires" Margin="10 0" BorderThickness="0 0.5 0 0"
+                            <GroupBox Grid.Row="1" Grid.ColumnSpan="2" Header="Запрашиваемые службы" Margin="10 0" BorderThickness="0 0.5 0 0"
                                     Height="150">
                                 <ListView x:Name="ServiceRequires" Margin="0 5 0 0">
                                     <ListView.View>
                                         <GridView>
-                                            <GridViewColumn Width="100" DisplayMemberBinding="{Binding Path=ServiceStatus}">Status</GridViewColumn>
-                                            <GridViewColumn Width="200" DisplayMemberBinding="{Binding Path=ServiceName}">Name</GridViewColumn>
-                                            <GridViewColumn Width="200" DisplayMemberBinding="{Binding Path=ServiceDisplayName}">DisplayName</GridViewColumn>
+                                <GridViewColumn Width="100" DisplayMemberBinding="{Binding Path=ServiceStatus}">Состояние</GridViewColumn>
+                                <GridViewColumn Width="200" DisplayMemberBinding="{Binding Path=ServiceName}">Название</GridViewColumn>
+                                <GridViewColumn Width="200" DisplayMemberBinding="{Binding Path=ServiceDisplayName}">Отображаемое имя</GridViewColumn>
                                         </GridView>
                                     </ListView.View>
                                     <ListView.Resources></ListView.Resources>
@@ -155,9 +155,9 @@
                         </Grid>
                     </ScrollViewer>
                 </TabItem>
-                <TabItem Header="Start New Service" Foreground="#FFF" >
+                <TabItem Header="Создание службы" Foreground="#FFF" >
                     <StackPanel Margin="5 0">
-                        <GroupBox Header="Select EXE File To Launch Service" BorderThickness="0 0.5 0 0" Grid.ColumnSpan="2">
+                        <GroupBox Header="Полный путь до файла (.exe)" BorderThickness="0 0.5 0 0" Grid.ColumnSpan="2">
                             <Grid x:Name="StartService">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="0.85*"/>
@@ -165,7 +165,7 @@
                                 </Grid.ColumnDefinitions>
 
                                 <TextBox x:Name="FilePathTextBox" Grid.Column="0" Margin="0 0 5 0"/>
-                                <Button x:Name="OpenFileButton" Grid.Column="1" Margin="5 0 0 0" Content="Open File"/>
+                                <Button x:Name="OpenFileButton" Grid.Column="1" Margin="5 0 0 0" Content="Открыть файл"/>
                             </Grid>
                         </GroupBox>
                         <Grid>
@@ -174,16 +174,16 @@
                                 <ColumnDefinition Width="0.5*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0" Margin="0 0 5 0">
-                                <GroupBox Header="Service Display Name" BorderThickness="0 0.5 0 0">
+                                <GroupBox Header="Отображаемое имя" BorderThickness="0 0.5 0 0">
                                     <TextBox x:Name="NewServiceDisplayName"/>
                                 </GroupBox>
-                                <Button x:Name="DeleteServiceButton" Content="Delete Selected Service" Margin="5 5 5 0"/>
+                                <Button x:Name="DeleteServiceButton" Content="Удаление выбранной службы" Margin="5 5 5 0"/>
                             </StackPanel>
                             <StackPanel Grid.Column="1" Margin="5 0 0 0">
-                                <GroupBox Header="Service Name" BorderThickness="0 0.5 0 0">
+                                <GroupBox Header="Название службы" BorderThickness="0 0.5 0 0">
                                     <TextBox x:Name="NewServiceName"/>
                                 </GroupBox>
-                                <Button x:Name="NewServiceButton" Content="Run New Service" Margin="5"/>
+                                <Button x:Name="NewServiceButton" Content="Создание службы" Margin="5"/>
                             </StackPanel>
                         </Grid>
                     </StackPanel>
