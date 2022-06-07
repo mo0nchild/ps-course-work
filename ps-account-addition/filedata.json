@@ -1,0 +1,24 @@
+{
+    "UsersList": [
+        {
+            "Username": "NIkita",
+            "Password": "password",
+            "Fullname": "Nikita Chernitchkin",
+            "Description": "The Best guy in the world",
+            "MayChangePassword": false,
+            "PasswordNeverExpires": false,
+            "Disabled": false
+        },
+        {
+            "Username": "Ivan",
+            "Password": "password1",
+            "Fullname": "Ivan Oganayn",
+            "Description": "",
+            "MayChangePassword": true,
+            "PasswordNeverExpires": false,
+            "Disabled": true
+        }
+    
+    ]
+}
+

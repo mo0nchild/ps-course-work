@@ -1,0 +1,169 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Users Right" WindowStyle="ToolWindow"
+        MinHeight="450" MinWidth="600" MaxHeight="540" MaxWidth="720">
+    <Window.Resources>
+        <Color x:Key="MainColorValue">#C7C4FD</Color>
+        <Color x:Key="SecondColorValue">#E9BCAC</Color>
+
+        <SolidColorBrush x:Key="MainSolidBackground" Color="{StaticResource MainColorValue}"/>
+        <SolidColorBrush x:Key="SecondSolidBackground" Color="{StaticResource SecondColorValue}"/>
+
+        <LinearGradientBrush x:Key="MainGradientBackground" StartPoint="0.3 0" EndPoint="0.6 1">
+            <GradientStop Color="{StaticResource MainColorValue}" Offset="0.3"/>
+            <GradientStop Color="{StaticResource SecondColorValue}" Offset="1.5"/>
+        </LinearGradientBrush>
+
+        <Style TargetType="{x:Type Border}">
+            <Setter Property="Background" Value="#FFF" />
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="10" Direction="-90" RenderingBias="Quality" ShadowDepth="1" Color="#CCC"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Foreground" Value="#FFF"/>
+            <Setter Property="Background" Value="{StaticResource MainSolidBackground}"/>
+
+            <Setter Property="FontWeight" Value="DemiBold"/>
+            <Setter Property="FontSize" Value="16"/>
+            
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border CornerRadius="5 5 10 10" BorderThickness="0" Background="{TemplateBinding Background}">
+                            <ContentPresenter Content="{TemplateBinding Content}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="8" Direction="-90" RenderingBias="Quality" ShadowDepth="1" Color="#CCC"/>
+                            </Border.Effect>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFF"/>
+                    <Setter Property="Foreground" Value="{StaticResource MainSolidBackground}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="GroupBox">
+            <Setter Property="Foreground" Value="#FFF"/>
+            <Setter Property="BorderBrush" Value="#FFF"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#FFF"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+        </Style>
+
+        <Style TargetType="{x:Type ListView}">
+            <Setter Property="Background" Value="#FFF"/>
+            <Setter Property="Foreground" Value="{StaticResource MainGradientBackground}"/>
+            <Setter Property="BorderBrush" Value="#FFF"/>
+            <Setter Property="BorderThickness" Value="3"/>
+        </Style>
+
+        <Style TargetType="{x:Type GridViewColumnHeader}" x:Key="GridViewColumnHeaderStyle">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
+                        <Border BorderThickness="0 0 0 1" BorderBrush="{StaticResource MainGradientBackground}" Background="Transparent">
+                            <TextBlock x:Name="ContentHeader" Text="{TemplateBinding Content}" Padding="5 5 5 0" TextAlignment="Left" 
+                                Foreground="{StaticResource MainSolidBackground}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Foreground" Value="#FFF" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="DemiBold" />
+        </Style>
+
+        <Style TargetType="{x:Type ListViewItem}">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Background" Value="#FFF"/>
+            <Setter Property="Foreground" Value="{StaticResource MainSolidBackground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource MainSolidBackground}"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource MainSolidBackground}"/>
+                    <Setter Property="Foreground" Value="#FFF"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+    </Window.Resources>
+    <Grid Background="{StaticResource MainGradientBackground}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.6*"/>
+            <ColumnDefinition Width="0.4*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.52*"/>
+                <RowDefinition Height="0.48*"/>
+            </Grid.RowDefinitions>
+            <Border Background="#FFF" Margin="20 20 0 0" Grid.Column="1" CornerRadius="10 20 10 20">
+                <ListView x:Name="AccessListView" Grid.Row="0" Margin="5">
+                    <ListView.View>
+                        <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle}">
+                            <GridViewColumn Width="160" DisplayMemberBinding="{Binding AccountName}" Header="Account"/>
+                            <GridViewColumn Width="80" DisplayMemberBinding="{Binding FileAccess}" Header="Access"/>
+                            <GridViewColumn Width="80" DisplayMemberBinding="{Binding AccessType}" Header="Type"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Border>
+            <StackPanel Grid.Row="1" Margin="20 5 0 10">
+                <GroupBox Header="FullName File">
+                    <TextBox x:Name="FullNameFileTextBox"/>
+                </GroupBox>
+                <GroupBox Header="Owner Name">
+                    <TextBox x:Name="OwnerNameTextBox"/>
+                </GroupBox>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.5*" />
+                        <ColumnDefinition Width="0.5*" />
+                    </Grid.ColumnDefinitions>
+                    <GroupBox Header="Access Name" Grid.Column="0" Margin="0 0 10 0">
+                        <TextBox x:Name="AccessRightsTextBox" />
+                    </GroupBox>
+                    <GroupBox Header="Access Control Type" Grid.Column="1" Margin="10 0 0 0">
+                        <TextBox x:Name="AccessTypeTextBox" />
+                    </GroupBox>
+                </Grid>
+                <GroupBox Header="Account Name">
+                    <TextBox x:Name="AccountNameTextBox"/>
+                </GroupBox>
+            </StackPanel>
+        </Grid>
+        <Border Margin="20" Grid.Column="1" CornerRadius="20 10 20 10" >
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.85*"/>
+                    <RowDefinition Height="0.15*"/>
+                </Grid.RowDefinitions>
+                <ListView x:Name="FileItemsListView" Grid.Row="0" Margin="5">
+                    <ListView.View>
+                        <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle}">
+                            <GridViewColumn Width="50" DisplayMemberBinding="{Binding FileExtension}" Header="Ext"/>
+                            <GridViewColumn Width="120" DisplayMemberBinding="{Binding FilePathName}" Header="FileName"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <Button x:Name="ChooseFilePathButton" Grid.Row="1" Margin="12 12" Content="Open Folder"/>
+            </Grid>
+        </Border>
+
+    </Grid>
+</Window>

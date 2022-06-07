@@ -1,0 +1,1 @@
+powershell.exe -File "укажи польный путь до скрипта" -ExecutionPolicy RemoteSigned -NoExit

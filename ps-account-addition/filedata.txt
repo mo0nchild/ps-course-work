@@ -1,0 +1,2 @@
+Nikita|password|Nikita Chernitchkin|The Best guy in the world|false|false|false;
+Ivan|password1|Ivan Oganayn||true|false|false;

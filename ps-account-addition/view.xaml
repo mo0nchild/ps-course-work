@@ -1,0 +1,180 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Create User" MinHeight="450" MinWidth="600" MaxHeight="540" MaxWidth="720" WindowStyle="ToolWindow">
+    <Window.Resources>
+        <Color x:Key="MainColorValue">#00E5FF</Color>
+        <Color x:Key="SecondColorValue">#4093FF</Color>
+
+        <LinearGradientBrush x:Key="MainBackgroundStyle" StartPoint="1,0" EndPoint="0,1">
+            <GradientStop Color="#00E5FF" Offset="0.0" />
+            <GradientStop Color="#1200FF" Offset="1.5"/>
+        </LinearGradientBrush>
+        <!--<LinearGradientBrush x:Key="MainBackgroundStyle" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#00FF5B" Offset="0.0" />
+            <GradientStop Color="#0014FF" Offset="1.2"/>
+        </LinearGradientBrush>-->
+
+        <SolidColorBrush x:Key="MainColorBrush" Color="{StaticResource MainColorValue}"/>
+        <SolidColorBrush x:Key="SecondColorBrush" Color="{StaticResource SecondColorValue}"/>
+
+        <Style TargetType="{x:Type GridViewColumnHeader}" x:Key="GridViewColumnHeaderStyle">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GridViewColumnHeader">
+                        <Border BorderThickness="0 0 0 1" BorderBrush="{StaticResource SecondColorBrush}" Background="Transparent">
+                            <TextBlock x:Name="ContentHeader" Text="{TemplateBinding Content}" Padding="5 5 5 0" TextAlignment="Left" 
+                                Foreground="{StaticResource SecondColorBrush}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Foreground" Value="#FFF" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="DemiBold" />
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="DemiBold"/>
+            <Setter Property="Foreground" Value="#FFF"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+        </Style>
+
+        <Style TargetType="TextBlock" x:Key="MyTextBlock">
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="Foreground" Value="#FFF"/>
+            <Setter Property="IsHitTestVisible" Value="False" />
+            <Setter Property="Focusable" Value="False" />
+        </Style>
+
+        <Style TargetType="CheckBox">
+            <Setter Property="Background" Value="#FFF"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="IsHitTestVisible" Value="False"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="LayoutTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1.2" ScaleY="1.2"/>
+                </Setter.Value>
+            </Setter>
+
+        </Style>
+
+        <Style TargetType="GroupBox">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Foreground" Value="#FFF"/>
+            <Setter Property="BorderBrush" Value="#FFF"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+
+        <Style TargetType="ListView">
+            <Setter Property="Background" Value="#FFF"/>
+            <Setter Property="Foreground" Value="{StaticResource SecondColorBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource SecondColorBrush}"/>
+            <Setter Property="BorderThickness" Value="3"/>
+        </Style>
+
+        <Style TargetType="ListViewItem">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Background" Value="#FFF"/>
+            <Setter Property="BorderBrush" Value="{StaticResource SecondColorBrush}"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource SecondColorBrush}"/>
+                    <Setter Property="Foreground" Value="#FFF"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource SecondColorBrush}"/>
+            <Setter Property="Foreground" Value="#FFF"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="DemiBold"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="BorderThickness" Value="3"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource MainColorBrush}"/>
+                    <Setter Property="CornerRadius" Value="5 5 10 10" />
+                </Style>
+            </Style.Resources>
+        </Style>
+
+    </Window.Resources>
+    <Grid Background="{StaticResource MainBackgroundStyle}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.5*"/>
+            <ColumnDefinition Width="0.5*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border x:Name="ListViewPanel" Grid.Column="1" Margin="10" Background="#FFF"
+            BorderThickness="3" CornerRadius="0 20 0 20">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.85*"/>
+                    <RowDefinition Height="0.15*"/>
+                </Grid.RowDefinitions>
+                <ListView x:Name="FileItemsListView" Margin="15">
+                    <ListView.View>
+                        <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle}">
+                            <GridViewColumn Width="80" DisplayMemberBinding="{Binding Path=Username}">UserName</GridViewColumn>
+                            <GridViewColumn Width="165" DisplayMemberBinding="{Binding Path=Fullname}">FullName</GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                    <ListView.Resources></ListView.Resources>
+                </ListView>
+                <Grid Grid.Row="1" Margin="10 0 10 10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.5*"/>
+                        <ColumnDefinition Width="0.5*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="SelectFileButton" Grid.Column="0" Margin="10 0" Content="Select File"/>
+                    <Button x:Name="CreateUserButton" Grid.Column="1" Margin="10 0" Content="Create User"/>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <StackPanel x:Name="PropertiesUserList" Margin="15 10" Grid.Column="0" VerticalAlignment="Center">
+            <GroupBox Header="User Name">
+                <TextBox x:Name="UserNameTextBox"/>
+            </GroupBox>
+            <GroupBox Header="User FullName">
+                <TextBox x:Name="FullNameTextBox"/>
+            </GroupBox>
+            <GroupBox Header="Password">
+                <TextBox x:Name="PasswordTextBox"/>
+            </GroupBox>
+            <Grid Margin="0 10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.5*"/>
+                    <ColumnDefinition Width="0.5*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="0">
+                    <TextBlock Text="May Change Password" Style="{StaticResource MyTextBlock}"/>
+                    <CheckBox x:Name="MayChangePassword" Margin="0 5"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Grid.Column="1" Grid.Row="0">
+                    <TextBlock Text="Password Never Expires" Style="{StaticResource MyTextBlock}"/>
+                    <CheckBox x:Name="PasswordNeverExpires" Margin="0 5"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="1" Grid.RowSpan="2">
+                    <TextBlock Text="User Disabled" Style="{StaticResource MyTextBlock}"/>
+                    <CheckBox x:Name="UserDisabled" Margin="0 5"/>
+                </StackPanel>
+            </Grid>
+            <GroupBox Header="Description">
+                <TextBox x:Name="DescriptionTextBox" MinLines="2" MaxLines="2"/>
+            </GroupBox>
+        </StackPanel>
+
+    </Grid>
+</Window>
